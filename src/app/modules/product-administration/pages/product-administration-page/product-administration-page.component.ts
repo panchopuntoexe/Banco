@@ -28,7 +28,7 @@ export class ProductAdministrationPageComponent implements OnInit {
 		]}
 	];
 
-	products: Product[] | null = null;
+	products: Product[] = [];
 	search: string = '';
 	productForm!: FormGroup;
 	productsFiltered: Product[] = [];
@@ -50,13 +50,21 @@ export class ProductAdministrationPageComponent implements OnInit {
 
 	async initialData() {
 		this.error = '';
-		const response = await firstValueFrom(this._productService.getProducts());
+		try {
+			const response = await firstValueFrom(this._productService.getProducts());
 
-		if (response && response.data) {
-			this.products = response.data;
-			this.productsFiltered = [...this.products];
-		} else {
+			if (response && response.data) {
+				this.products = response.data;
+				this.productsFiltered = [...this.products];
+			} else {
+				this.error = 'No se pudieron cargar los productos';
+				this.products = [];
+				this.productsFiltered = [];
+			}
+		} catch (error) {
 			this.error = 'No se pudieron cargar los productos';
+			this.products = [];
+			this.productsFiltered = [];
 		}
 	}
 
@@ -72,8 +80,8 @@ export class ProductAdministrationPageComponent implements OnInit {
 	}
 
 	filterProducts() {
-		if (!this.search || this.search.trim() === '' || !this.products) {
-			this.productsFiltered = [...this.products || []];
+		if (!this.search || this.search.trim() === '') {
+			this.productsFiltered = [...this.products];
 		} else {
 			const term = this.search.toLowerCase().trim();
 			this.productsFiltered = this.products.filter((product) =>
@@ -101,8 +109,8 @@ export class ProductAdministrationPageComponent implements OnInit {
 	async deleteProductService(product: Product) {
 		try {
 			await firstValueFrom(this._productService.deleteProduct(product.id));
-			this.products = this.products?.filter((p) => p.id !== product.id) || [];
-			this.productsFiltered = [...(this.products || [])];
+			this.products = this.products.filter((p) => p.id !== product.id);
+			this.productsFiltered = [...this.products];
 			this.filterProducts();
 		} catch {
 			this._alertService.showAlert('No se pudo eliminar el producto', eAlertType.DANGER);

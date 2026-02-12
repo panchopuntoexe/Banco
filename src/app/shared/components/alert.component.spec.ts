@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AlertComponent } from './alert.component';
-import { AlertService, AlertData } from '../../services/alert.service';
+import { AlertService } from '../../services/alert.service';
+import { AlertData } from '../../utils/models/alert.interface';
 import { eAlertType } from '../../utils/enums/alert.enum';
 import { of } from 'rxjs';
 
@@ -22,7 +23,9 @@ describe('AlertComponent', () => {
   };
 
   beforeEach(async () => {
-    const alertServiceSpy = jasmine.createSpyObj('AlertService', ['closeAlert']);
+    const alertServiceSpy = jasmine.createSpyObj('AlertService', ['closeAlert'], {
+      alertData$: of(null)
+    });
 
     await TestBed.configureTestingModule({
       declarations: [ AlertComponent ],
@@ -45,12 +48,21 @@ describe('AlertComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it('should subscribe to alert service', () => {
-      spyOn(mockAlertService.alertData$, 'subscribe');
+    it('should subscribe to alert service and set alertData', () => {
+      const testAlertData: AlertData = {
+        message: 'Test message',
+        type: eAlertType.SUCCESS
+      };
+      
+      // Recreate the spy with a new observable
+      Object.defineProperty(mockAlertService, 'alertData$', {
+        value: of(testAlertData),
+        writable: false
+      });
 
       component.ngOnInit();
 
-      expect(mockAlertService.alertData$.subscribe).toHaveBeenCalled();
+      expect(component.alertData).toEqual(testAlertData);
     });
   });
 
@@ -58,7 +70,7 @@ describe('AlertComponent', () => {
     it('should call onConfirm and close alert when showConfirmButton is true', () => {
       component.alertData = mockConfirmAlertData;
 
-      component.onClose();
+      component.onConfirm();
 
       expect(mockConfirmAlertData.onConfirm).toHaveBeenCalled();
       expect(mockAlertService.closeAlert).toHaveBeenCalled();
@@ -67,7 +79,7 @@ describe('AlertComponent', () => {
     it('should only close alert when showConfirmButton is false', () => {
       component.alertData = mockAlertData;
 
-      component.onClose();
+      component.onConfirm();
 
       expect(mockAlertService.closeAlert).toHaveBeenCalled();
     });
@@ -79,7 +91,7 @@ describe('AlertComponent', () => {
         showConfirmButton: true
       };
 
-      component.onClose();
+      component.onConfirm();
 
       expect(mockAlertService.closeAlert).toHaveBeenCalled();
     });

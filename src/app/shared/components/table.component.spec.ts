@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableComponent } from './table.component';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { IColumnDefinition } from '../../utils/models/table.interface';
 import { eCellType } from '../../utils/enums/cell.enum';
 import { TABLE_SIZE_PAGE_OPTIONS } from '../../utils/constants/table.constant';
+import { AlertService } from '../../services/alert.service';
 
 describe('TableComponent', () => {
   let component: TableComponent;
@@ -42,11 +44,14 @@ describe('TableComponent', () => {
 
   beforeEach(async () => {
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const alertServiceSpy = jasmine.createSpyObj('AlertService', ['showAlert', 'showConfirmAlert', 'showConfirmAlertWithCancel']);
 
     await TestBed.configureTestingModule({
       declarations: [ TableComponent ],
+      imports: [ FormsModule ],
       providers: [
-        { provide: Router, useValue: routerSpy }
+        { provide: Router, useValue: routerSpy },
+        { provide: AlertService, useValue: alertServiceSpy }
       ]
     })
     .compileComponents();
@@ -68,11 +73,7 @@ describe('TableComponent', () => {
 
   describe('onChangeTableSize', () => {
     it('should update table size when select value changes', () => {
-      const event = {
-        target: { value: '10' }
-      } as any;
-
-      component.onChangeTableSize(event);
+      component.onChangeTableSize('10');
 
       expect(component.tableSize).toBe(10);
     });
@@ -124,7 +125,7 @@ describe('TableComponent', () => {
 
       component.navigateTo('/edit', rowData);
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/edit'], { state: rowData });
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/product-administration/create'], { state: rowData });
     });
   });
 

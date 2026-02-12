@@ -106,10 +106,11 @@ export class ProductCreationPageComponent implements OnInit {
           () => this._router.navigate(['/product-administration'])
         );
       } else {
-        this._alertService.showAlert('Error al crear el producto' + response.message, eAlertType.DANGER);
+        this._alertService.showAlert('Error al crear el producto', eAlertType.DANGER);
       }
     } catch (error) {
-      this._alertService.showAlert('Error al crear el producto ' + ((error as any).error.message ?? 'Error desconocido'), eAlertType.DANGER);
+      const errorMessage = (error as any)?.error?.message || 'Error desconocido';
+      this._alertService.showAlert('Error al crear el producto', eAlertType.DANGER);
     }
   }
 

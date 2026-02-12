@@ -32,9 +32,9 @@ describe('ProductCreationPageComponent', () => {
   };
 
   beforeEach(async () => {
-    const productsServiceSpy = jasmine.createSpyObj('ProductsService', ['createProduct']);
+    const productsServiceSpy = jasmine.createSpyObj('ProductsService', ['createProduct', 'updateProduct', 'verifyId']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const alertServiceSpy = jasmine.createSpyObj('AlertService', ['showAlert']);
+    const alertServiceSpy = jasmine.createSpyObj('AlertService', ['showAlert', 'showConfirmAlert']);
 
     await TestBed.configureTestingModule({
       declarations: [ 
@@ -68,12 +68,12 @@ describe('ProductCreationPageComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it('should initialize component and subscribe to form changes', () => {
-      spyOn(component.productForm.valueChanges, 'subscribe');
-
+    it('should initialize component and set revision date for new product', () => {
       component.ngOnInit();
 
-      expect(component.productForm.valueChanges.subscribe).toHaveBeenCalled();
+      const dateRevisionControl = component.productForm.get('date_revision');
+      expect(dateRevisionControl?.disabled).toBe(true);
+      expect(dateRevisionControl?.value).toBeTruthy();
     });
   });
 
@@ -125,6 +125,8 @@ describe('ProductCreationPageComponent', () => {
 
     it('should have correct validators for date_revision field', () => {
       const dateRevisionControl = component.productForm.get('date_revision');
+      dateRevisionControl?.enable();
+      dateRevisionControl?.setValue('');
 
       expect(dateRevisionControl?.hasValidator).toBeDefined();
       expect(dateRevisionControl?.errors).toBeTruthy();
@@ -133,6 +135,7 @@ describe('ProductCreationPageComponent', () => {
 
   describe('sendForm', () => {
     it('should create product successfully and navigate to administration page', fakeAsync(() => {
+      mockProductsService.verifyId.and.returnValue(of(false));
       mockProductsService.createProduct.and.returnValue(of(mockSuccessResponse));
       component.productForm.patchValue({
         id: 'test-id',
@@ -146,13 +149,14 @@ describe('ProductCreationPageComponent', () => {
       component.sendForm();
       tick();
 
+      expect(mockProductsService.verifyId).toHaveBeenCalledWith('test-id');
       expect(mockProductsService.createProduct).toHaveBeenCalled();
       expect(component.error).toBe('');
-      expect(mockAlertService.showAlert).toHaveBeenCalled();
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/product-administration']);
+      expect(mockAlertService.showConfirmAlert).toHaveBeenCalled();
     }));
 
     it('should handle service error and show error alert', fakeAsync(() => {
+      mockProductsService.verifyId.and.returnValue(of(false));
       mockProductsService.createProduct.and.returnValue(throwError(() => new Error('Network error')));
       component.productForm.patchValue({
         id: 'test-id',
@@ -166,12 +170,14 @@ describe('ProductCreationPageComponent', () => {
       component.sendForm();
       tick();
 
+      expect(mockProductsService.verifyId).toHaveBeenCalledWith('test-id');
       expect(mockProductsService.createProduct).toHaveBeenCalled();
       expect(mockAlertService.showAlert).toHaveBeenCalledWith('Error al crear el producto', eAlertType.DANGER);
       expect(mockRouter.navigate).not.toHaveBeenCalled();
     }));
 
     it('should handle invalid response from service', fakeAsync(() => {
+      mockProductsService.verifyId.and.returnValue(of(false));
       mockProductsService.createProduct.and.returnValue(of({} as ApiResponse<Product>));
       component.productForm.patchValue({
         id: 'test-id',
@@ -185,12 +191,14 @@ describe('ProductCreationPageComponent', () => {
       component.sendForm();
       tick();
 
+      expect(mockProductsService.verifyId).toHaveBeenCalledWith('test-id');
       expect(mockProductsService.createProduct).toHaveBeenCalled();
       expect(mockAlertService.showAlert).toHaveBeenCalledWith('Error al crear el producto', eAlertType.DANGER);
       expect(mockRouter.navigate).not.toHaveBeenCalled();
     }));
 
     it('should handle 400 error response', fakeAsync(() => {
+      mockProductsService.verifyId.and.returnValue(of(false));
       mockProductsService.createProduct.and.returnValue(throwError(() => ({
         error: mockErrorResponse,
         status: 400
@@ -207,6 +215,7 @@ describe('ProductCreationPageComponent', () => {
       component.sendForm();
       tick();
 
+      expect(mockProductsService.verifyId).toHaveBeenCalledWith('test-id');
       expect(mockProductsService.createProduct).toHaveBeenCalled();
       expect(mockAlertService.showAlert).toHaveBeenCalledWith('Error al crear el producto', eAlertType.DANGER);
       expect(mockRouter.navigate).not.toHaveBeenCalled();
@@ -222,7 +231,12 @@ describe('ProductCreationPageComponent', () => {
       expect(form.get('logo')?.hasError('required')).toBe(true);
       expect(form.get('description')?.hasError('required')).toBe(true);
       expect(form.get('date_release')?.hasError('required')).toBe(true);
-      expect(form.get('date_revision')?.hasError('required')).toBe(true);
+      
+      // date_revision is disabled and has a default value set in ngOnInit
+      const dateRevisionControl = form.get('date_revision');
+      dateRevisionControl?.enable();
+      dateRevisionControl?.setValue('');
+      expect(dateRevisionControl?.hasError('required')).toBe(true);
     });
 
     it('should validate id field length constraints', () => {
@@ -277,15 +291,14 @@ describe('ProductCreationPageComponent', () => {
   });
 
   describe('form value changes subscription', () => {
-    it('should log form value changes', () => {
-      spyOn(console, 'log');
+    it('should update date_revision when date_release changes in new product mode', () => {
+      component.editMode = false;
+      component.ngOnInit();
 
-      component.productForm.patchValue({
-        id: 'test-id',
-        name: 'test-name'
-      });
+      component.productForm.get('date_release')?.setValue('2025-06-15');
 
-      expect(console.log).toHaveBeenCalled();
+      const dateRevision = component.productForm.get('date_revision')?.value;
+      expect(dateRevision).toBe('2026-06-15');
     });
   });
 });

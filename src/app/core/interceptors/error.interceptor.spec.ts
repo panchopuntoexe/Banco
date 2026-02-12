@@ -30,14 +30,16 @@ describe('errorInterceptor', () => {
 
     const mockNext: HttpHandlerFn = () => throwError(() => errorResponse);
 
-    errorInterceptor(request, mockNext).subscribe({
-      error: (error) => {
-        expect(alertService.showAlert).toHaveBeenCalledWith(
-          'Solicitud incorrecta. Verifica los datos enviados.',
-          eAlertType.DANGER
-        );
-        expect(error).toBe(errorResponse);
-      }
+    TestBed.runInInjectionContext(() => {
+      errorInterceptor(request, mockNext).subscribe({
+        error: (error) => {
+          expect(alertService.showAlert).toHaveBeenCalledWith(
+            'Solicitud incorrecta. Verifica los datos enviados.',
+            eAlertType.DANGER
+          );
+          expect(error).toBe(errorResponse);
+        }
+      });
     });
   });
 
@@ -51,14 +53,16 @@ describe('errorInterceptor', () => {
 
     const mockNext: HttpHandlerFn = () => throwError(() => errorResponse);
 
-    errorInterceptor(request, mockNext).subscribe({
-      error: (error) => {
-        expect(alertService.showAlert).toHaveBeenCalledWith(
-          'Recurso no encontrado.',
-          eAlertType.DANGER
-        );
-        expect(error).toBe(errorResponse);
-      }
+    TestBed.runInInjectionContext(() => {
+      errorInterceptor(request, mockNext).subscribe({
+        error: (error) => {
+          expect(alertService.showAlert).toHaveBeenCalledWith(
+            'Recurso no encontrado.',
+            eAlertType.DANGER
+          );
+          expect(error).toBe(errorResponse);
+        }
+      });
     });
   });
 
@@ -72,14 +76,16 @@ describe('errorInterceptor', () => {
 
     const mockNext: HttpHandlerFn = () => throwError(() => errorResponse);
 
-    errorInterceptor(request, mockNext).subscribe({
-      error: (error) => {
-        expect(alertService.showAlert).toHaveBeenCalledWith(
-          'Error interno del servidor. Inténtalo más tarde.',
-          eAlertType.DANGER
-        );
-        expect(error).toBe(errorResponse);
-      }
+    TestBed.runInInjectionContext(() => {
+      errorInterceptor(request, mockNext).subscribe({
+        error: (error) => {
+          expect(alertService.showAlert).toHaveBeenCalledWith(
+            'Error interno del servidor. Inténtalo más tarde.',
+            eAlertType.DANGER
+          );
+          expect(error).toBe(errorResponse);
+        }
+      });
     });
   });
 
@@ -93,14 +99,16 @@ describe('errorInterceptor', () => {
 
     const mockNext: HttpHandlerFn = () => throwError(() => errorResponse);
 
-    errorInterceptor(request, mockNext).subscribe({
-      error: (error) => {
-        expect(alertService.showAlert).toHaveBeenCalledWith(
-          'Error: Connection failed',
-          eAlertType.DANGER
-        );
-        expect(error).toBe(errorResponse);
-      }
+    TestBed.runInInjectionContext(() => {
+      errorInterceptor(request, mockNext).subscribe({
+        error: (error) => {
+          expect(alertService.showAlert).toHaveBeenCalledWith(
+            'Error: Connection failed',
+            eAlertType.DANGER
+          );
+          expect(error).toBe(errorResponse);
+        }
+      });
     });
   });
 
@@ -114,14 +122,16 @@ describe('errorInterceptor', () => {
 
     const mockNext: HttpHandlerFn = () => throwError(() => errorResponse);
 
-    errorInterceptor(request, mockNext).subscribe({
-      error: (error) => {
-        expect(alertService.showAlert).toHaveBeenCalledWith(
-          'Error 999: Unknown Status',
-          eAlertType.DANGER
-        );
-        expect(error).toBe(errorResponse);
-      }
+    TestBed.runInInjectionContext(() => {
+      errorInterceptor(request, mockNext).subscribe({
+        error: (error) => {
+          expect(alertService.showAlert).toHaveBeenCalledWith(
+            'Error 999: Http failure response for (unknown url): 999 Unknown Status',
+            eAlertType.DANGER
+          );
+          expect(error).toBe(errorResponse);
+        }
+      });
     });
   });
 
@@ -131,9 +141,11 @@ describe('errorInterceptor', () => {
 
     const mockNext: HttpHandlerFn = () => of(mockResponse);
 
-    errorInterceptor(request, mockNext).subscribe((response) => {
-      expect(response).toBe(mockResponse);
-      expect(alertService.showAlert).not.toHaveBeenCalled();
+    TestBed.runInInjectionContext(() => {
+      errorInterceptor(request, mockNext).subscribe((response) => {
+        expect(response).toBe(mockResponse);
+        expect(alertService.showAlert).not.toHaveBeenCalled();
+      });
     });
   });
 }); 

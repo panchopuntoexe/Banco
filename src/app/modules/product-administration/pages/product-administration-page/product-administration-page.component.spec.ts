@@ -140,10 +140,10 @@ describe('ProductAdministrationPageComponent', () => {
       });
 
       expect(component.columnDefinition[4]).toEqual({
-        name: 'Fecha de reestructuración',
+        name: 'Fecha de revisión',
         key: 'date_revision',
         type: eCellType.DATE,
-        tooltip: 'Fecha de reestructuración del producto'
+        tooltip: 'Fecha de revisión del producto'
       });
 
       expect(component.columnDefinition[5]).toEqual({
@@ -151,7 +151,8 @@ describe('ProductAdministrationPageComponent', () => {
         key: 'actions',
         type: eCellType.ACTIONS_NAVIGATE,
         options: [
-          { label: 'Editar', value: 'edit', navigate: '/create', data: { id: 'id' } }
+          { label: 'Editar', value: 'edit', navigate: '/create', data: { id: 'id' } },
+          { label: 'Eliminar', value: 'delete', navigate: '/create', data: { id: 'id' } }
         ]
       });
     });

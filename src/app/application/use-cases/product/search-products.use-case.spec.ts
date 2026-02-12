@@ -11,24 +11,24 @@ describe('SearchProductsUseCase', () => {
       name: 'Tarjeta de Crédito Oro',
       description: 'Tarjeta premium con beneficios exclusivos',
       logo: 'card-gold.png',
-      dateRelease: new Date('2026-01-01'),
-      dateRevision: new Date('2027-01-01')
+      dateRelease: new Date('2027-06-01'),
+      dateRevision: new Date('2028-06-01')
     }),
     ProductEntity.create({
       id: 'LOAN002',
       name: 'Préstamo Personal',
       description: 'Préstamo con tasa preferencial',
       logo: 'loan.png',
-      dateRelease: new Date('2026-02-01'),
-      dateRevision: new Date('2027-02-01')
+      dateRelease: new Date('2027-07-01'),
+      dateRevision: new Date('2028-07-01')
     }),
     ProductEntity.create({
       id: 'SAVE003',
       name: 'Cuenta de Ahorros',
       description: 'Cuenta con alta rentabilidad',
       logo: 'savings.png',
-      dateRelease: new Date('2026-03-01'),
-      dateRevision: new Date('2027-03-01')
+      dateRelease: new Date('2027-08-01'),
+      dateRevision: new Date('2028-08-01')
     })
   ];
 

@@ -14,24 +14,24 @@ describe('GetAllProductsUseCase', () => {
       name: 'Producto 1',
       description: 'Descripción del producto 1',
       logo: 'logo1.png',
-      dateRelease: new Date('2026-01-01'),
-      dateRevision: new Date('2027-01-01')
+      dateRelease: new Date('2027-06-01'),
+      dateRevision: new Date('2028-06-01')
     }),
     ProductEntity.create({
       id: 'PROD2',
       name: 'Producto 2',
       description: 'Descripción del producto 2',
       logo: 'logo2.png',
-      dateRelease: new Date('2026-06-01'),
-      dateRevision: new Date('2027-06-01')
+      dateRelease: new Date('2027-09-01'),
+      dateRevision: new Date('2028-09-01')
     }),
     ProductEntity.create({
       id: 'PROD3',
       name: 'Producto 3',
       description: 'Descripción del producto 3',
       logo: 'logo3.png',
-      dateRelease: new Date('2026-12-01'),
-      dateRevision: new Date('2027-12-01')
+      dateRelease: new Date('2027-12-01'),
+      dateRevision: new Date('2028-12-01')
     })
   ];
 

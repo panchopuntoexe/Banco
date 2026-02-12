@@ -41,7 +41,7 @@ describe('ProductEntity', () => {
       const invalidData = { ...validProductData, name: 'ABC' };
 
       expect(() => ProductEntity.create(invalidData)).toThrowError(
-        'El nombre debe tener entre 5 y 100 caracteres'
+        'El nombre debe tener entre 6 y 100 caracteres'
       );
     });
 
@@ -49,7 +49,7 @@ describe('ProductEntity', () => {
       const invalidData = { ...validProductData, name: 'A'.repeat(101) };
 
       expect(() => ProductEntity.create(invalidData)).toThrowError(
-        'El nombre debe tener entre 5 y 100 caracteres'
+        'El nombre debe tener entre 6 y 100 caracteres'
       );
     });
 
@@ -121,7 +121,7 @@ describe('ProductEntity', () => {
       const product = ProductEntity.create(validProductData);
 
       expect(() => product.update({ name: 'ABC' })).toThrowError(
-        'El nombre debe tener entre 5 y 100 caracteres'
+        'El nombre debe tener entre 6 y 100 caracteres'
       );
     });
   });

@@ -31,7 +31,7 @@ import { Router } from "@angular/router";
                         <td *ngFor="let column of columnDefinition" class="table-cell">
                             @switch (column.type) {
                                 @case (eCellType.IMAGE) {
-                                    <img class="img-cell" onerror="this.src='icons/image.png'" [src]="row[column.key]" height="50" width="50" alt="Logo" />
+                                    <img class="img-cell" onerror="this.src='icons/image.png'"  [src]="row[column.key]" height="50" width="50" alt="Logo" />
                                 }
                                 @case (eCellType.STRING) {
                                     {{ row[column.key] }}
