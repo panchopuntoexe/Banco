@@ -9,9 +9,6 @@ import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { httpErrorInterceptor } from './core/interceptors/http-error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 
-import { ProductRepository } from './domain/repositories/product.repository';
-import { ProductHttpRepository } from './infrastructure/repositories/product-http.repository';
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
@@ -24,6 +21,5 @@ export const appConfig: ApplicationConfig = {
       ])
     ),
     importProvidersFrom(ProductAdministrationModule),
-    { provide: ProductRepository, useClass: ProductHttpRepository }
   ]
 };
