@@ -386,7 +386,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    gap: 75%;
+    gap: 16px;
     margin-bottom: 24px;
     padding: 24px;
     background: $color-background-secondary;
@@ -395,6 +395,7 @@ body {
 
     app-input {
         flex: 1;
+        max-width: 70%;
     }
 
     .btn {
@@ -402,6 +403,7 @@ body {
         display: flex;
         align-items: center;
         gap: 8px;
+        flex-shrink: 0;
 
         span {
             font-size: 20px;
@@ -525,5 +527,15 @@ body {
 
     .search-form {
         flex-direction: column;
+        gap: 16px;
+        
+        app-input {
+            max-width: 100%;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
     }
 }
